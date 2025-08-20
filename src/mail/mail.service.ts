@@ -11,9 +11,7 @@ export class MailService {
 
   constructor(private configService: ConfigService) {
     this.transporter = createTransport({
-      host: this.configService.get('SMTP_HOST'),
-      port: this.configService.get('SMTP_PORT'),
-      secure: this.configService.get('SMTP_SECURE') === 'true',
+      service: 'gmail',
       auth: {
         user: this.configService.get('SMTP_USER'),
         pass: this.configService.get('SMTP_PASS'),

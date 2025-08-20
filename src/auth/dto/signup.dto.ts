@@ -18,14 +18,6 @@ export class SignupDto {
   @Matches(/^[a-zA-Z0-9_]+$/, { message: 'Username can only contain letters, numbers, and underscores' })
   username: string;
 
-  @IsNotEmpty()
-  @Matches(/^[a-zA-Z ]+$/, { message: 'First name can only contain letters and spaces' })
-  firstName: string;
-
-  @IsNotEmpty()
-  @Matches(/^[a-zA-Z ]+$/, { message: 'Last name can only contain letters and spaces' })
-  lastName: string;
-
   @IsEmail()
   email: string;
 

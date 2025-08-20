@@ -42,7 +42,6 @@ export class UserService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    console.log("password in user service ", createUserDto.password)
     return this.userRepository.createUser(createUserDto);
   }
 

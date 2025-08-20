@@ -35,7 +35,7 @@ export class User {
   @Column({ type: 'text', nullable: true })
   verificationToken: string; // verification_token
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column({ type: 'text', nullable: true })
   passwordResetToken: string; // password_reset_token
 
   @Column({ type: 'timestamptz', nullable: true })
@@ -47,18 +47,12 @@ export class User {
   @Column({ type: 'text', unique: true, nullable: true })
   facebookId: string; // facebook_id
 
-  @Column({ type: 'boolean', default: true })
+  @Column({ type: 'boolean', default: false })
   isVerified: boolean;
 
   @ManyToOne(() => Role, { eager: true })
   @JoinColumn({ name: 'role_id' })
   role: Role;
-  // Profile Information
-  @Column({ type: 'text', nullable: true })
-  firstName: string;
-
-  @Column({ type: 'text', nullable: true })
-  lastName: string;
 
   @Column({ type: 'text', nullable: true })
   profilePicture: string;

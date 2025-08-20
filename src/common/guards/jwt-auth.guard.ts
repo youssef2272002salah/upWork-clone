@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { UserService } from '../../users/users.service';
 import { ConfigService } from '@nestjs/config';
+import { todo } from 'node:test';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -20,11 +21,10 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException('No token provided');
     }
 
+
     try {
       // Debugging: Log the token and secret
-      console.log('Token:', token);
       const secret = this.configService.get<string>('JWT_SECRET');
-      console.log('Secret:', secret);
 
       // Verify token with proper error handling
       const payload = await this.jwtService.verifyAsync(token, { 
@@ -32,19 +32,21 @@ export class JwtAuthGuard implements CanActivate {
         ignoreExpiration: false, // Ensure we check expiration
       });
       
-      console.log('Payload:', payload);
 
       const user = await this.userService.getUserById(payload.id);
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
 
-      if (user.passwordChangedAt) {
-        const changedTimestamp = Math.floor(user.passwordChangedAt.getTime() / 1000);
-        if (payload.iat < changedTimestamp) {
-          throw new UnauthorizedException('Password changed - please login again');
-        }
-      }
+
+      //TODO: Uncomment this section if you want to check password change time
+      // if (user.passwordChangedAt) {
+      //   const changedTimestamp = Math.floor(user.passwordChangedAt.getTime() / 1000);
+      //   if (payload.iat < changedTimestamp) {
+      //     throw new UnauthorizedException('Password changed - please login again');
+      //   }
+      // }
+
 
       request.user = user;
       return true;

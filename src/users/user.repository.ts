@@ -27,22 +27,17 @@ export class UserRepository extends Repository<User> {
   }
 
   async findByResetToken(token: string): Promise<User | null> {
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
     return this.findOne({
       where: {
-        passwordResetToken: hashedToken,
-        passwordResetExpires: MoreThan(new Date()),
+        passwordResetToken: token,
       },
     });
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    console.log("password in reposotry ", createUserDto.password)
     const user = await this.create(createUserDto);
-    console.log("password in reposotry after create ", user.password)
 
     const saved = await this.save(user);
-    console.log("after saved ",saved.password)
     return saved
   }
 
