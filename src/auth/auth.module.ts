@@ -8,6 +8,9 @@ import { JwtStrategy } from '../common/strategies/jwt.strategy';
 // import { FacebookStrategy } from './strategies/facebook.strategy';
 import { UsersModule } from '../users/users.module';
 import { MailModule } from '../mail/mail.module';
+import { UserRepository } from 'src/users/user.repository';
+import { FacebookStrategy } from 'src/common/strategies/facebook.strategy';
+import { GoogleStrategy } from 'src/common/strategies/google.strategy';
 
 @Module({
   imports: [
@@ -18,10 +21,11 @@ import { MailModule } from '../mail/mail.module';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '15m' },
     }),
+    
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy
-    //, GoogleStrategy, FacebookStrategy
+    , GoogleStrategy, FacebookStrategy,UserRepository
     ],
   exports: [AuthService],
 })

@@ -9,12 +9,16 @@ import { MailService } from '../mail/mail.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserRepository } from 'src/users/user.repository';
 
 // import { Tokens } from './interfaces/tokens.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly userRepository: UserRepository,
     private userService: UserService,
     private jwtService: JwtService,
     private mailService: MailService,
@@ -203,15 +207,30 @@ export class AuthService {
     return this.createSendToken(user, res);
   }
 
-  async googleAuthCallback(req: Request, res: Response): Promise<void> {
-    const user = req.user as User;
-    const tokens = this.createSendToken(user, res);
-    res.redirect(`${process.env.CLIENT_URL}/auth/success?token=${(await tokens).accessToken}`);
-  }
+  
 
-  // async facebookAuthCallback(req: Request, res: Response): Promise<void> {
-  //   const user = req.user as User;
-  //   const tokens = this.createSendToken(user, res);
-  //   res.redirect(`${process.env.CLIENT_URL}/auth/success?token=${tokens.accessToken}`);
-  // }
+  async validateOAuthLogin(oAuthUser: any) {
+    let user = await this.userRepository.findOne({ where: { email: oAuthUser.email } });
+  
+    if (!user) {
+      user = this.userRepository.create({
+        email: oAuthUser.email,
+        username: oAuthUser.firstName || oAuthUser.email,
+        profilePicture: oAuthUser.picture,
+        googleId: oAuthUser.provider === 'google' ? oAuthUser.providerId : null,
+        facebookId: oAuthUser.provider === 'facebook' ? oAuthUser.providerId : null,
+        isVerified: true,
+      });
+      await this.userRepository.save(user);
+    }
+  
+    const payload = { sub: user.id, email: user.email };
+    return {
+      accessToken: this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET, // مهم هنا عشان ماترجعش error تاني
+      }),
+      user,
+    };
+  }
+  
 }

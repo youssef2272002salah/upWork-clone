@@ -62,23 +62,36 @@ export class AuthController {
   }
   
 
-  // @Get('google')
-  // @UseGuards(AuthGuard('google'))
-  // async googleAuth() {}
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {}
 
-  // @Get('google/callback')
-  // @UseGuards(AuthGuard('google'))
-  // async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
-  //   return this.authService.googleAuthCallback(req, res);
-  // }
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthCallback(@Req() req, @Res() res) {
+    try {
+      const result = await this.authService.validateOAuthLogin(req.user);
+      return res.json(result); // أو redirect مع JWT
+    } catch (error) {
+      console.error('Google login error:', error);
+      return res.status(500).json({ message: 'Google login failed' });
+    }
+  }
 
-  // @Get('facebook')
-  // @UseGuards(AuthGuard('facebook'))
-  // async facebookAuth() {}
+  @Get('facebook')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookAuth() {}
 
-  // @Get('facebook/callback')
-  // @UseGuards(AuthGuard('facebook'))
-  // async facebookAuthCallback(@Req() req: Request, @Res() res: Response) {
-  //   return this.authService.facebookAuthCallback(req, res);
-  // }
+  @Get('facebook/callback')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookAuthCallback(@Req() req, @Res() res: Response) {
+    try {
+      const result = await this.authService.validateOAuthLogin(req.user);
+      return res.json(result); // أو redirect مع JWT
+    } catch (error) {
+      console.error('Google login error:', error);
+      return res.status(500).json({ message: 'Google login failed' });
+    }
+  }
+
 }
