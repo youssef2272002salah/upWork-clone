@@ -12,6 +12,12 @@ export class PermissionsController {
     return this.permissionsService.create(createPermissionDto);
   }
 
+    // ✅ Create multiple permissions at once
+    @Post('bulk')
+    createBulk(@Body() createPermissionsDto: CreatePermissionDto[]) {
+      return this.permissionsService.createBulk(createPermissionsDto);
+    }
+
   @Get()
   findAll() {
     return this.permissionsService.findAll();

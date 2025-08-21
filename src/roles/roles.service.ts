@@ -1,26 +1,70 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Role } from './entities/role.entity';
+import { Permission } from 'src/permissions/entities/permission.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Injectable()
-export class RolesService {
-  create(createRoleDto: CreateRoleDto) {
-    return 'This action adds a new role';
+export class RoleService {
+  constructor(
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
+
+    @InjectRepository(Permission)
+    private readonly permissionRepository: Repository<Permission>,
+  ) {}
+
+  async create(createRoleDto: CreateRoleDto): Promise<Role> {
+    const { name, description, permissionIds } = createRoleDto;
+
+    const permissions = permissionIds?.length
+      ? await this.permissionRepository.findByIds(permissionIds)
+      : [];
+
+    const role = this.roleRepository.create({
+      name,
+      description,
+      permissions,
+    });
+
+    return this.roleRepository.save(role);
   }
 
-  findAll() {
-    return `This action returns all roles`;
+  async findAll(): Promise<Role[]> {
+    return this.roleRepository.find({ relations: ['permissions'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
+  async findOne(id: number): Promise<Role> {
+    const role = await this.roleRepository.findOne({
+      where: { id },
+      relations: ['permissions'],
+    });
+
+    if (!role) {
+      throw new NotFoundException(`Role with ID ${id} not found`);
+    }
+    return role;
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  async update(id: number, updateRoleDto: UpdateRoleDto): Promise<Role> {
+    const role = await this.findOne(id);
+
+    const { name, description, permissionIds } = updateRoleDto;
+
+    if (name) role.name = name;
+    if (description) role.description = description;
+
+    if (permissionIds) {
+      role.permissions = await this.permissionRepository.findByIds(permissionIds);
+    }
+
+    return this.roleRepository.save(role);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} role`;
+  async remove(id: number): Promise<void> {
+    const role = await this.findOne(id);
+    await this.roleRepository.remove(role);
   }
 }
