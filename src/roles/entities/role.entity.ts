@@ -28,7 +28,7 @@ import {
 /*
 many-to-many mapping: roles can have many permissions, and permissions can belong to many roles.
 */
-    @ManyToMany(() => Permission, { cascade: true })
+    @ManyToMany(() => Permission, { cascade: true, eager: true })
     @JoinTable({
       name: 'role_permissions',
       joinColumn: { name: 'role_id', referencedColumnName: 'id' },

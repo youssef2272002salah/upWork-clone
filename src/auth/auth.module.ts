@@ -19,7 +19,7 @@ import { GoogleStrategy } from 'src/common/strategies/google.strategy';
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '15m' },
+      signOptions: { expiresIn: '1500000m' },
     }),
     
   ],
@@ -27,6 +27,6 @@ import { GoogleStrategy } from 'src/common/strategies/google.strategy';
   providers: [AuthService, JwtStrategy
     , GoogleStrategy, FacebookStrategy,UserRepository
     ],
-  exports: [AuthService],
+  exports: [AuthService, JwtModule, PassportModule, JwtStrategy, GoogleStrategy, FacebookStrategy, UserRepository],
 })
 export class AuthModule {}

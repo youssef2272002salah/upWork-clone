@@ -227,7 +227,7 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email };
     return {
       accessToken: this.jwtService.sign(payload, {
-        secret: process.env.JWT_SECRET, // مهم هنا عشان ماترجعش error تاني
+        secret: process.env.JWT_SECRET, 
       }),
       user,
     };
