@@ -9,7 +9,7 @@ import {
   @Entity('permissions')
   @Unique(['name']) // Ensure no duplicate permission names
   export class Permission {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment')
     id: number;
   
     @Column({ type: 'text' })

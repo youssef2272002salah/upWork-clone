@@ -67,4 +67,28 @@ export class RoleService {
     const role = await this.findOne(id);
     await this.roleRepository.remove(role);
   }
+
+  async assignPermissions(
+    roleId: number,
+    permissionIds: number[],
+  ): Promise<Role> {
+    const role = await this.findOne(roleId);
+    const permissions = await this.permissionRepository.findByIds(permissionIds);
+
+    role.permissions.push(...permissions);
+    return this.roleRepository.save(role);
+  }
+  async removePermissions(
+    roleId: number,
+    permissionIds: number[],
+  ): Promise<Role> {  
+    const role = await this.findOne(roleId);
+    const permissions = await this.permissionRepository.findByIds(permissionIds);
+
+    role.permissions = role.permissions.filter(
+      (perm) => !permissions.some((p) => p.id === perm.id),
+    );
+
+    return this.roleRepository.save(role);
+  }
 }

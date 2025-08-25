@@ -18,22 +18,25 @@ export class CategoriesController {
   }
   
   @Get()
-  @Permissions('view_users')
+  @Permissions('view_category')
   findAll() {
     return this.categoriesService.findAll();
   }
 
   @Get(':id')
+  @Permissions('view_category')
   findOne(@Param('id') id: string) {
     return this.categoriesService.findOne(+id);
   }
 
   @Patch(':id')
+  @Permissions('update_category')
   update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoriesService.update(+id, updateCategoryDto);
   }
 
   @Delete(':id')
+  @Permissions('delete_category')
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(+id);
   }

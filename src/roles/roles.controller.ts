@@ -45,4 +45,19 @@ export class RoleController {
     await this.roleService.remove(id);
     return { message: `Role with ID ${id} deleted successfully` };
   }
+
+  @Post('assign-permissions/:roleId')
+  async assignPermissions(
+    @Param('roleId', ParseIntPipe) roleId: number,
+    @Body('permissionIds') permissionIds: number[],
+  ): Promise<Role> {
+    return this.roleService.assignPermissions(roleId, permissionIds);
+  }
+  @Post('remove-permissions/:roleId')
+  async removePermissions(
+    @Param('roleId', ParseIntPipe) roleId: number,
+    @Body('permissionIds') permissionIds: number[],
+  ): Promise<Role> {
+    return this.roleService.removePermissions(roleId, permissionIds);
+  }
 }

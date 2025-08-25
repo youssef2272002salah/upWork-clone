@@ -9,11 +9,8 @@ import { MailService } from '../mail/mail.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from 'src/users/user.repository';
 
-// import { Tokens } from './interfaces/tokens.interface';
 
 @Injectable()
 export class AuthService {
@@ -206,8 +203,6 @@ export class AuthService {
 
     return this.createSendToken(user, res);
   }
-
-  
 
   async validateOAuthLogin(oAuthUser: any) {
     let user = await this.userRepository.findOne({ where: { email: oAuthUser.email } });

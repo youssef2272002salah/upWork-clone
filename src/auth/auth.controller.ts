@@ -5,7 +5,6 @@ import { LoginDto } from './dto/login.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { Response, Request } from 'express';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
-import { use } from 'passport';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
