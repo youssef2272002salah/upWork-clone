@@ -6,7 +6,6 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from '../common/strategies/jwt.strategy';
 import { UsersModule } from '../users/users.module';
 import { MailModule } from '../mail/mail.module';
-import { UserRepository } from 'src/users/user.repository';
 import { FacebookStrategy } from 'src/common/strategies/facebook.strategy';
 import { GoogleStrategy } from 'src/common/strategies/google.strategy';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
