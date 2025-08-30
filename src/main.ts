@@ -1,17 +1,29 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-// import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationError, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
-import { AllExceptionsFilter } from './common/filters/http-exception.filter';
+import { GlobalExceptionFilter } from './common/filters/global-exception-filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalFilters(new AllExceptionsFilter())
-  // app.useGlobalFilters(new HttpExceptionFilter()); toDo: implement a global exception filter if needed
   app.use(cookieParser());
+  app.useGlobalFilters(new GlobalExceptionFilter())
+ // Global validation pipe with detailed errors
+ app.useGlobalPipes(
+  new ValidationPipe({
+    exceptionFactory: (errors: ValidationError[]) => {
+      return new BadRequestException({
+        message: 'Validation failed',
+        code: 'VALIDATION_ERROR',
+        details: errors.map(error => ({
+          property: error.property,
+          value: error.value,
+          constraints: error.constraints,
+        })),
+      });
+    },
+  }),
+); 
   
   await app.listen(process.env.PORT || 3000);
 }
