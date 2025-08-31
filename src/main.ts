@@ -3,11 +3,13 @@ import { AppModule } from './app.module';
 import { BadRequestException, ValidationError, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { GlobalExceptionFilter } from './common/filters/global-exception-filter';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
-  app.useGlobalFilters(new GlobalExceptionFilter())
+  const configService = app.get(ConfigService);
+  app.useGlobalFilters(new GlobalExceptionFilter(configService));
  // Global validation pipe with detailed errors
  app.useGlobalPipes(
   new ValidationPipe({
