@@ -6,6 +6,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 // import { PaginationDto } from '../../common/dto/pagination.dto';
 // import { PaginatedResult } from '../../common/interfaces/paginated-result.interface';
+import { FilterOperator, FilterSuffix, Paginate, PaginateQuery, paginate, Paginated } from 'nestjs-paginate'
+
 
 @Injectable()
 export class UserService {
@@ -14,19 +16,14 @@ export class UserService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async findAll(paginationDto){
-    const { page = 1, limit = 10 } = paginationDto;
-    const [results, total] = await this.userRepository.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-    });
-
-    return {
-      data: results,
-      total,
-      page,
-      limit,
-    };
+  async findAll(query : PaginateQuery): Promise<Paginated<User>> {
+    return paginate(query, this.userRepository, {
+      sortableColumns: ['id'],
+      nullSort: 'last',
+      defaultSortBy: [['id', 'DESC']],
+      searchableColumns: ['username'],
+      select: ['id','username', 'lastVetVisit'],
+    })
   }
 
   async getUserById(id: string): Promise<User> {

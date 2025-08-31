@@ -9,6 +9,7 @@ import { Roles } from '../common/decorators/roles.decorator';
 
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { User } from './entities/user.entity';
+import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 @Controller('users')
 export class UserController {
@@ -22,8 +23,8 @@ export class UserController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   // @Roles(UserRole.ADMIN)
-  async findAll(@Query() paginationDto) {
-    return this.userService.findAll(paginationDto);
+  public findAll(@Paginate() query: PaginateQuery): Promise<Paginated<User>> {
+    return this.userService.findAll(query)
   }
 
   @Get('me')
